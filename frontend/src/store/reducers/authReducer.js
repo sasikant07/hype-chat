@@ -8,7 +8,7 @@ export const userRegister = createAsyncThunk(
   async (info, thunkAPI) => {
     try {
       const { data } = await api.post("/messenger/user-register", info);
-      localStorage.setItem("customerToken", data.token);
+      // localStorage.setItem("customerToken", data.token);
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
