@@ -17,7 +17,6 @@ const userRegister = async (req, res) => {
     email = email[0];
     password = password[0];
     confirmPassword = confirmPassword[0];
-    image = image[0];
 
     const error = [];
 
@@ -111,4 +110,73 @@ const userRegister = async (req, res) => {
   });
 };
 
-module.exports = { userRegister };
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  const error = [];
+
+  if (!email) {
+    error.push("Please provide your email");
+  }
+
+  if (!password) {
+    error.push("Please provide your password");
+  }
+
+  if (email && !validator.isEmail(email)) {
+    error.push("Please provide a valid email");
+  }
+
+  if (error.length > 0) {
+    res.status(400).json({ error: { errorMessage: error } });
+  } else {
+    try {
+      const checkUser = await userModel.findOne({ email }).select("+password");
+
+      if (checkUser) {
+        const matchPassword = await bcrypt.compare(
+          password,
+          checkUser.password
+        );
+
+        if (matchPassword) {
+          const token = jwt.sign(
+            {
+              id: checkUser._id,
+              email: checkUser.email,
+              userName: checkUser.userName,
+              image: checkUser.image,
+              registerTime: checkUser.createdAt,
+            },
+            process.env.SECRET,
+            {
+              expiresIn: process.env.TOKEN_EXP,
+            }
+          );
+
+          const options = {
+            expires: new Date(
+              Date.now() + process.env.COOKIE_EXP * 24 * 60 * 60 * 1000
+            ),
+          };
+
+          res.status(201).cookie("authToken", token, options).json({
+            successMessage: "You are logged in successfully",
+            token,
+          });
+        } else {
+          res.status(401).json({
+            error: { errorMessage: ["Email or Password doesn't match"] },
+          });
+        }
+      } else {
+        res.status(400).json({
+          error: { errorMessage: ["Email not found. Please Register"] },
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ error: { errorMessage: error } });
+    }
+  }
+};
+
+module.exports = { userRegister, login };

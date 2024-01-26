@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { userRegister } from "../store/reducers/authReducer";
+import { messageClear, userRegister } from "../store/reducers/authReducer";
+import toast from "react-hot-toast";
 
 const initialValue = {
   userName: "",
@@ -12,7 +13,11 @@ const initialValue = {
 };
 
 const Register = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { loading, error, success, myInfo, authenticate } = useSelector(
+    (state) => state.auth
+  );
   const [state, setState] = useState(initialValue);
   const [loadImage, setLoadImage] = useState("");
 
@@ -50,6 +55,22 @@ const Register = () => {
 
     dispatch(userRegister(formData));
   };
+
+  useEffect(() => {
+    if (authenticate) {
+      navigate("/");
+    }
+
+    if (success) {
+      toast.success(success);
+      dispatch(messageClear());
+    }
+
+    if (error) {
+      error.map((err) => toast.error(err));
+      dispatch(messageClear());
+    }
+  }, [error, success]);
 
   return (
     <div className="register">

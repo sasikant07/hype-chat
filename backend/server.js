@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const { dbConnect } = require("./utils/db");
 const authRouter = require("./routes/authRoute");
@@ -20,6 +21,7 @@ app.use(
 );
 
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 app.use("/api/messenger", authRouter);
 

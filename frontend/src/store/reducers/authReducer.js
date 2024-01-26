@@ -33,6 +33,19 @@ export const userRegister = createAsyncThunk(
   }
 );
 
+export const userLogin = createAsyncThunk(
+  "auth/user-login",
+  async (info, thunkAPI) => {
+    try {
+      const { data } = await api.post("/messenger/user-login", info);
+      localStorage.setItem("authToken", data.token);
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const authReducer = createSlice({
   name: "auth",
   initialState,
@@ -59,9 +72,25 @@ const authReducer = createSlice({
       state.authenticate = false;
       state.myInfo = "";
     });
+    builder.addCase(userLogin.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(userLogin.fulfilled, (state, action) => {
+      state.loading = false;
+      state.success = action.payload.successMessage;
+      const myInfo = decodeToken(action.payload.token);
+      state.myInfo = myInfo;
+      state.authenticate = true;
+    });
+    builder.addCase(userLogin.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload.error.errorMessage;
+      state.authenticate = false;
+      state.myInfo = "";
+    });
   },
 });
 
-export const {} = authReducer.actions;
+export const { messageClear } = authReducer.actions;
 
 export default authReducer.reducer;
