@@ -4,6 +4,7 @@ import { FaEdit } from "react-icons/fa";
 import { BiSearch } from "react-icons/bi";
 import ActiveFriend from "./ActiveFriend";
 import Friends from "./Friends";
+import RightSide from "./RightSide";
 
 const Messenger = () => {
   return (
@@ -75,6 +76,7 @@ const Messenger = () => {
             </div>
           </div>
         </div>
+        <RightSide />
       </div>
     </div>
   );
