@@ -4,6 +4,7 @@
     .row {
       height: 100%;
       .col-8 {
+        transition: all 0.5s;
         .message-send-show {
           height: 100vh;
           border-right: 1px solid #213156bf;
@@ -63,6 +64,11 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                label {
+                  display: flex;
+                  margin-bottom: 0;
+                  cursor: pointer;
+                }
               }
             }
           }
@@ -70,6 +76,21 @@
       }
       .col-4 {
       }
+    }
+    #dot {
+      display: none;
+    }
+    #dot:checked ~ .row .col-4 {
+      display: none;
+    }
+    #dot:checked ~ .row .col-8 {
+      width: 100%;
+    }
+    #dot:checked ~ .row .col-8 .message-show .my-message .my-text {
+      width: 500px;
+    }
+    #dot:checked ~ .row .col-8 .message-show .fd-message .fd-text {
+      width: 500px;
     }
   }
 }
