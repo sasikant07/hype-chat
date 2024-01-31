@@ -1,15 +1,15 @@
 import React from 'react'
 
-const Friends = () => {
+const Friends = ({friend}) => {
   return (
     <div className="friend">
         <div className="friend-image">
             <div className="image">
-                <img src="/images/e5e1b7a95f49f612418a0a803admin.jpg" alt="" />
+                <img src={`/images/${friend.image}`} alt="" />
             </div>
         </div>
         <div className="friend-name">
-            <h4>Samuel Barnerd</h4>
+            <h4>{friend.userName}</h4>
         </div>
     </div>
   )
