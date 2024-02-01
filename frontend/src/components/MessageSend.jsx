@@ -6,13 +6,56 @@ import { AiFillGift } from "react-icons/ai";
 import { IoMdSend } from "react-icons/io";
 import { MdEmojiEmotions } from "react-icons/md";
 
-const MessageSend = () => {
-    const emojis = [
-        "😀", "😃", "😄", "😁", "😆", "😅", "🤣", "😂", "🤣", "🙂", "🙃", "🫠", "😉", "😊", "😇", "🥰", "😍", "🤩", "😘", "😗", "🥲", "😋", "😛", "😜", "🤪", "😝", "🤑", "🤗", "🤭", "🫣", "🤫", "🤔", "🫡", "🤐", "🤨", "😐", "😬", "😌", "😔", "😴", "😷", "🤒", "🤢",
-    ]
+const MessageSend = ({ newMessage, inputHandle, sendMessage }) => {
+  const emojis = [
+    "😀",
+    "😃",
+    "😄",
+    "😁",
+    "😆",
+    "😅",
+    "🤣",
+    "😂",
+    "🤣",
+    "🙂",
+    "🙃",
+    "🫠",
+    "😉",
+    "😊",
+    "😇",
+    "🥰",
+    "😍",
+    "🤩",
+    "😘",
+    "😗",
+    "🥲",
+    "😋",
+    "😛",
+    "😜",
+    "🤪",
+    "😝",
+    "🤑",
+    "🤗",
+    "🤭",
+    "🫣",
+    "🤫",
+    "🤔",
+    "🫡",
+    "🤐",
+    "🤨",
+    "😐",
+    "😬",
+    "😌",
+    "😔",
+    "😴",
+    "😷",
+    "🤒",
+    "🤢",
+  ];
+
   return (
     <div className="message-send-section">
-        <input type="checkbox" id="emoji" />
+      <input type="checkbox" id="emoji" />
       <div className="file hover-attachment">
         <div className="add-attachment">Add Attachment</div>
         <BsPlusCircle />
@@ -36,21 +79,21 @@ const MessageSend = () => {
           type="text"
           name="message"
           id="message"
+          onChange={inputHandle}
+          value={newMessage}
           className="form-control"
           placeholder="Aa"
         />
         <label htmlFor="emoji">🙂</label>
       </div>
-      <div className="file">
+      <div onClick={sendMessage} className="file">
         <IoMdSend />
       </div>
       <div className="emoji-section">
         <div className="emoji">
-            {
-                emojis.map((e) => (
-                    <span>{e}</span>
-                ))
-            }
+          {emojis.map((e) => (
+            <span>{e}</span>
+          ))}
         </div>
       </div>
     </div>

@@ -17,6 +17,18 @@ export const getFriends = createAsyncThunk(
   }
 );
 
+export const messegeSend = createAsyncThunk(
+  "messenger/send-message",
+  async (data, thunkAPI) => {
+    try {
+      const { data } = await api.post("/messenger/send-message", data);
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const messengerReducer = createSlice({
   name: "messenger",
   initialState,
@@ -39,7 +51,7 @@ const messengerReducer = createSlice({
       // state.loading = false;
       // state.error = action.payload.error.errorMessage;
     });
-  }
+  },
 });
 
 export const { messageClear } = messengerReducer.actions;
