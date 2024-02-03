@@ -3,6 +3,7 @@ import api from "../../api/api";
 
 const initialState = {
   friends: [],
+  message: [],
 };
 
 export const getFriends = createAsyncThunk(
@@ -17,11 +18,23 @@ export const getFriends = createAsyncThunk(
   }
 );
 
-export const messegeSend = createAsyncThunk(
+export const messageSend = createAsyncThunk(
   "messenger/send-message",
-  async (data, thunkAPI) => {
+  async (info, thunkAPI) => {
     try {
-      const { data } = await api.post("/messenger/send-message", data);
+      const { data } = await api.post("/messenger/send-message", info);
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getMessage = createAsyncThunk(
+  "messenger/get-message",
+  async (id, thunkAPI) => {
+    try {
+      const { data } = await api.get(`/messenger/get-message/${id}`);
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -43,13 +56,13 @@ const messengerReducer = createSlice({
       // state.loading = true;
     });
     builder.addCase(getFriends.fulfilled, (state, action) => {
-      // state.loading = false;
-      // state.success = action.payload.successMessage;
       state.friends = action.payload.friends;
     });
-    builder.addCase(getFriends.rejected, (state, action) => {
-      // state.loading = false;
-      // state.error = action.payload.error.errorMessage;
+    builder.addCase(messageSend.fulfilled, (state, action) => {
+      state.message = [...state.message, action.payload.message];
+    });
+    builder.addCase(getMessage.fulfilled, (state, action) => {
+      state.message = action.payload.message;
     });
   },
 });

@@ -35,7 +35,10 @@ const messageUploadDB = async (req, res) => {
         senderId: senderId,
         senderName: senderName,
         receiverId: receiverId,
-        message: message,
+        message: {
+          text: message,
+          image: "",
+        },
       },
     });
   } catch (error) {
@@ -43,4 +46,24 @@ const messageUploadDB = async (req, res) => {
   }
 };
 
-module.exports = { getFriends, messageUploadDB };
+const getMessage = async (req, res) => {
+  const { id } = req.params;
+  const myId = req.myId;
+  const fdId = id;
+
+  try {
+    let getAllMessage = await messageModel.find({});
+
+    getAllMessage = getAllMessage.filter(
+      (m) =>
+        m.senderId === myId && m.receiverId === fdId ||
+        m.receiverId === myId && m.senderId === fdId
+    );
+
+    res.status(200).json({ success: true, message: getAllMessage });
+  } catch (error) {
+    res.status(500).json({ error: { errorMessage: error } });
+  }
+};
+
+module.exports = { getFriends, messageUploadDB, getMessage };

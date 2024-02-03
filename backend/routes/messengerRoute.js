@@ -8,5 +8,6 @@ router.post(
   authMiddleware,
   messengerController.messageUploadDB
 );
+router.get("/get-message/:id", authMiddleware, messengerController.getMessage);
 
 module.exports = router;

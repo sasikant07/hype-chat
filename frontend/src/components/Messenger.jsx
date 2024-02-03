@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BsThreeDots } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
@@ -6,12 +6,17 @@ import { BiSearch } from "react-icons/bi";
 import ActiveFriend from "./ActiveFriend";
 import Friends from "./Friends";
 import RightSide from "./RightSide";
-import { getFriends, messegeSend } from "../store/reducers/messengerReducer";
+import {
+  getFriends,
+  messageSend,
+  getMessage,
+} from "../store/reducers/messengerReducer";
 
 const Messenger = () => {
   const dispatch = useDispatch();
-  const { friends } = useSelector((state) => state.messenger);
+  const { friends, message } = useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
+  const scrollRef = useRef();
   const [currentFriend, setCurrentFriend] = useState("");
   const [newMessage, setNewMessage] = useState("");
 
@@ -28,7 +33,8 @@ const Messenger = () => {
       message: newMessage ? newMessage : "❤️",
     };
 
-    dispatch(messegeSend(data));
+    dispatch(messageSend(data));
+    setNewMessage("");
   };
 
   useEffect(() => {
@@ -40,6 +46,14 @@ const Messenger = () => {
       setCurrentFriend(friends[0]);
     }
   }, [friends]);
+
+  useEffect(() => {
+    dispatch(getMessage(currentFriend._id));
+  }, [currentFriend?._id]);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
 
   return (
     <div className="messenger">
@@ -83,13 +97,13 @@ const Messenger = () => {
               {friends && friends.length > 0
                 ? friends.map((fd, index) => (
                     <div
+                      key={index}
                       onClick={() => setCurrentFriend(fd)}
                       className={
                         currentFriend._id === fd._id
                           ? `hover-friend active`
                           : `hover-friend`
                       }
-                      key={index}
                     >
                       <Friends friend={fd} />
                     </div>
@@ -104,6 +118,8 @@ const Messenger = () => {
             newMessage={newMessage}
             inputHandle={inputHandle}
             sendMessage={sendMessage}
+            message={message}
+            scrollRef={scrollRef}
           />
         ) : (
           "Please select a friend to chat"
