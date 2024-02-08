@@ -6,7 +6,7 @@ import { AiFillGift } from "react-icons/ai";
 import { IoMdSend } from "react-icons/io";
 import { MdEmojiEmotions } from "react-icons/md";
 
-const MessageSend = ({ newMessage, inputHandle, sendMessage }) => {
+const MessageSend = ({ newMessage, inputHandle, sendMessage, emojiSend, imageSend }) => {
   const emojis = [
     "😀",
     "😃",
@@ -62,7 +62,7 @@ const MessageSend = ({ newMessage, inputHandle, sendMessage }) => {
       </div>
       <div className="file hover-image">
         <div className="add-image">Add Image</div>
-        <input type="file" id="pic" className="form-control" />
+        <input onChange={imageSend} type="file" id="pic" className="form-control" />
         <label htmlFor="pic">
           <RiGalleryLine />
         </label>
@@ -92,7 +92,7 @@ const MessageSend = ({ newMessage, inputHandle, sendMessage }) => {
       <div className="emoji-section">
         <div className="emoji">
           {emojis.map((e) => (
-            <span>{e}</span>
+            <span onClick={() => emojiSend(e)}>{e}</span>
           ))}
         </div>
       </div>

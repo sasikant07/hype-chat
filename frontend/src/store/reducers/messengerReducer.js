@@ -30,6 +30,18 @@ export const messageSend = createAsyncThunk(
   }
 );
 
+export const imageMessageSend = createAsyncThunk(
+  "messenger/image-message-send",
+  async (info, thunkAPI) => {
+    try {
+      const { data } = await api.post("/messenger/image-message-send", info);
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const getMessage = createAsyncThunk(
   "messenger/get-message",
   async (id, thunkAPI) => {
@@ -59,6 +71,9 @@ const messengerReducer = createSlice({
       state.friends = action.payload.friends;
     });
     builder.addCase(messageSend.fulfilled, (state, action) => {
+      state.message = [...state.message, action.payload.message];
+    });
+    builder.addCase(imageMessageSend.fulfilled, (state, action) => {
       state.message = [...state.message, action.payload.message];
     });
     builder.addCase(getMessage.fulfilled, (state, action) => {

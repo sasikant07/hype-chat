@@ -10,6 +10,7 @@ import {
   getFriends,
   messageSend,
   getMessage,
+  imageMessageSend,
 } from "../store/reducers/messengerReducer";
 
 const Messenger = () => {
@@ -35,6 +36,25 @@ const Messenger = () => {
 
     dispatch(messageSend(data));
     setNewMessage("");
+  };
+
+  const emojiSend = (emo) => {
+    setNewMessage(`${newMessage}` + emo);
+  };
+
+  const imageSend = (e) => {
+    if (e.target.files.length !== 0) {
+      const imageName = e.target.files[0].name;
+      const newImageName = Date.now() + imageName;
+
+      const formData = new FormData();
+      formData.append("senderName", myInfo.userName);
+      formData.append("receiverId", currentFriend._id);
+      formData.append("image", e.target.files[0]);
+      formData.append("imageName", newImageName);
+
+      dispatch(imageMessageSend(formData));
+    }
   };
 
   useEffect(() => {
@@ -120,6 +140,8 @@ const Messenger = () => {
             sendMessage={sendMessage}
             message={message}
             scrollRef={scrollRef}
+            emojiSend={emojiSend}
+            imageSend={imageSend}
           />
         ) : (
           "Please select a friend to chat"

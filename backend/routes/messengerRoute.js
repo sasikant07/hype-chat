@@ -8,6 +8,11 @@ router.post(
   authMiddleware,
   messengerController.messageUploadDB
 );
+router.post(
+  "/image-message-send",
+  authMiddleware,
+  messengerController.imageMessageUpload
+);
 router.get("/get-message/:id", authMiddleware, messengerController.getMessage);
 
 module.exports = router;
