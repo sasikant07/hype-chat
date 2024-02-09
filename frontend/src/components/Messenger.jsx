@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
 import { BsThreeDots } from "react-icons/bs";
 import { FaEdit } from "react-icons/fa";
 import { BiSearch } from "react-icons/bi";
@@ -18,8 +19,10 @@ const Messenger = () => {
   const { friends, message } = useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
   const scrollRef = useRef();
+  const socket = useRef();
   const [currentFriend, setCurrentFriend] = useState("");
   const [newMessage, setNewMessage] = useState("");
+  const [activeUsers, setActiveUsers] = useState([]);
 
   const inputHandle = (e) => {
     setNewMessage(e.target.value);
@@ -75,6 +78,21 @@ const Messenger = () => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 
+  useEffect(() => {
+    socket.current = io("ws://localhost:8000");
+  }, []);
+
+  useEffect(() => {
+    socket.current.emit("addUser", myInfo.id, myInfo);
+  }, []);
+
+  useEffect(() => {
+    socket.current.on("getUser", (users) => {
+      const filterUser = users.filter((u) => u.userId !== myInfo.id);
+      setActiveUsers(filterUser);
+    });
+  }, []);
+
   return (
     <div className="messenger">
       <div className="row">
@@ -111,7 +129,9 @@ const Messenger = () => {
               </div>
             </div>
             <div className="active-friends">
-              <ActiveFriend />
+              {activeUsers && activeUsers.length > 0
+                ? activeUsers.map((u) => <ActiveFriend setCurrentFriend={setCurrentFriend} user={u} />)
+                : ""}
             </div>
             <div className="friends">
               {friends && friends.length > 0
@@ -142,6 +162,7 @@ const Messenger = () => {
             scrollRef={scrollRef}
             emojiSend={emojiSend}
             imageSend={imageSend}
+            activeUsers={activeUsers}
           />
         ) : (
           "Please select a friend to chat"
