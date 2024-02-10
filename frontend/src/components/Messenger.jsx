@@ -12,6 +12,7 @@ import {
   messageSend,
   getMessage,
   imageMessageSend,
+  sendSocketMessage,
 } from "../store/reducers/messengerReducer";
 
 const Messenger = () => {
@@ -23,9 +24,16 @@ const Messenger = () => {
   const [currentFriend, setCurrentFriend] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [activeUsers, setActiveUsers] = useState([]);
+  const [socketMessage, setSocketMessage] = useState("");
+  const [typingMessage, setTypingMessage] = useState("");
 
   const inputHandle = (e) => {
     setNewMessage(e.target.value);
+    socket.current.emit("typingMessage", {
+      senderId: myInfo.id,
+      receiverId: currentFriend._id,
+      msg: e.target.value,
+    });
   };
 
   const sendMessage = (e) => {
@@ -36,7 +44,21 @@ const Messenger = () => {
       receiverId: currentFriend._id,
       message: newMessage ? newMessage : "❤️",
     };
-
+    socket.current.emit("sendMessage", {
+      senderId: myInfo.id,
+      senderName: myInfo.userName,
+      receiverId: currentFriend._id,
+      time: new Date(),
+      message: {
+        text: newMessage ? newMessage : "❤️",
+        image: "",
+      },
+    });
+    socket.current.emit("typingMessage", {
+      senderId: myInfo.id,
+      receiverId: currentFriend._id,
+      msg: "",
+    });
     dispatch(messageSend(data));
     setNewMessage("");
   };
@@ -55,6 +77,17 @@ const Messenger = () => {
       formData.append("receiverId", currentFriend._id);
       formData.append("image", e.target.files[0]);
       formData.append("imageName", newImageName);
+
+      socket.current.emit("sendMessage", {
+        senderId: myInfo.id,
+        senderName: myInfo.userName,
+        receiverId: currentFriend._id,
+        time: new Date(),
+        message: {
+          text: "",
+          image: newImageName,
+        },
+      });
 
       dispatch(imageMessageSend(formData));
     }
@@ -80,6 +113,14 @@ const Messenger = () => {
 
   useEffect(() => {
     socket.current = io("ws://localhost:8000");
+
+    socket.current.on("getMessage", (data) => {
+      setSocketMessage(data);
+    });
+
+    socket.current.on("typingMessageGet", (data) => {
+      setTypingMessage(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -92,6 +133,22 @@ const Messenger = () => {
       setActiveUsers(filterUser);
     });
   }, []);
+
+  useEffect(() => {
+    //
+  }, []);
+
+  useEffect(() => {
+    if (socketMessage && currentFriend) {
+      if (
+        socketMessage.senderId === currentFriend._id &&
+        socketMessage.receiverId === myInfo.id
+      ) {
+        dispatch(sendSocketMessage({ message: socketMessage }));
+      }
+    }
+    setSocketMessage("");
+  }, [socketMessage]);
 
   return (
     <div className="messenger">
@@ -130,7 +187,12 @@ const Messenger = () => {
             </div>
             <div className="active-friends">
               {activeUsers && activeUsers.length > 0
-                ? activeUsers.map((u) => <ActiveFriend setCurrentFriend={setCurrentFriend} user={u} />)
+                ? activeUsers.map((u) => (
+                    <ActiveFriend
+                      setCurrentFriend={setCurrentFriend}
+                      user={u}
+                    />
+                  ))
                 : ""}
             </div>
             <div className="friends">
@@ -163,6 +225,7 @@ const Messenger = () => {
             emojiSend={emojiSend}
             imageSend={imageSend}
             activeUsers={activeUsers}
+            typingMessage={typingMessage}
           />
         ) : (
           "Please select a friend to chat"

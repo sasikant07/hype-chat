@@ -82,3 +82,14 @@
     font-size: 12px;
   }
 }
+.typing-message {
+  padding: 0px 10px;
+  .fd-text {
+    .message-text {
+      background-color: pink;
+      color: #000;
+      font-weight: 500;
+      border-radius: 50px;
+    }
+  }
+}

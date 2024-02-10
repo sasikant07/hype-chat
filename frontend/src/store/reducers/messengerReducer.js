@@ -62,6 +62,9 @@ const messengerReducer = createSlice({
       // state.error = "";
       // state.success = "";
     },
+    sendSocketMessage: (state, action) => {
+      state.message = [...state.message, action.payload.message];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getFriends.pending, (state) => {
@@ -82,6 +85,6 @@ const messengerReducer = createSlice({
   },
 });
 
-export const { messageClear } = messengerReducer.actions;
+export const { messageClear, sendSocketMessage } = messengerReducer.actions;
 
 export default messengerReducer.reducer;

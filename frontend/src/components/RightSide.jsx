@@ -17,6 +17,7 @@ const RightSide = (props) => {
     emojiSend,
     imageSend,
     activeUsers,
+    typingMessage,
   } = props;
 
   return (
@@ -60,6 +61,7 @@ const RightSide = (props) => {
                 currentFriend={currentFriend}
                 message={message}
                 scrollRef={scrollRef}
+                typingMessage={typingMessage}
               />
               <MessageSend
                 newMessage={newMessage}
@@ -71,7 +73,10 @@ const RightSide = (props) => {
             </div>
           </div>
           <div className="col-4">
-            <FriendInfo currentFriend={currentFriend} activeUsers={activeUsers} />
+            <FriendInfo
+              currentFriend={currentFriend}
+              activeUsers={activeUsers}
+            />
           </div>
         </div>
       </div>
