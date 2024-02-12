@@ -7,6 +7,11 @@ import { BiSearch } from "react-icons/bi";
 import ActiveFriend from "./ActiveFriend";
 import Friends from "./Friends";
 import RightSide from "./RightSide";
+import toast from "react-hot-toast";
+import useSound from "use-sound";
+import notificationSound from "../audio/message.mp3";
+import sendingSound from "../audio/ding.mp3";
+
 import {
   getFriends,
   messageSend,
@@ -26,6 +31,8 @@ const Messenger = () => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [socketMessage, setSocketMessage] = useState("");
   const [typingMessage, setTypingMessage] = useState("");
+  const [notificationSoundPlay] = useSound(notificationSound);
+  const [sendingSoundPlay] = useSound(sendingSound);
 
   const inputHandle = (e) => {
     setNewMessage(e.target.value);
@@ -38,6 +45,7 @@ const Messenger = () => {
 
   const sendMessage = (e) => {
     e.preventDefault();
+    sendingSoundPlay();
 
     const data = {
       senderName: myInfo.userName,
@@ -65,10 +73,16 @@ const Messenger = () => {
 
   const emojiSend = (emo) => {
     setNewMessage(`${newMessage}` + emo);
+    socket.current.emit("typingMessage", {
+      senderId: myInfo.id,
+      receiverId: currentFriend._id,
+      msg: emo,
+    });
   };
 
   const imageSend = (e) => {
     if (e.target.files.length !== 0) {
+      sendingSoundPlay();
       const imageName = e.target.files[0].name;
       const newImageName = Date.now() + imageName;
 
@@ -150,8 +164,31 @@ const Messenger = () => {
     setSocketMessage("");
   }, [socketMessage]);
 
+  useEffect(() => {
+    if (
+      socketMessage &&
+      socketMessage.senderId !== currentFriend._id &&
+      socketMessage.receiverId === myInfo.id
+    ) {
+      notificationSoundPlay();
+      toast(`${socketMessage.senderName} \n ${socketMessage.message.text}`, {
+        duration: 10000,
+        position: "bottom-right",
+      });
+    }
+  }, [socketMessage]);
+
   return (
     <div className="messenger">
+      {/* <Toaster 
+        position={"bottom-right"}
+        reverseOrder={false}
+        toastOptions={{
+          style: {
+            fontSize: "18px"
+          }
+        }}
+      /> */}
       <div className="row">
         <div className="col-3">
           <div className="left-side">
