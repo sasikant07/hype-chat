@@ -5,11 +5,11 @@ const Friends = ({friend}) => {
     <div className="friend">
         <div className="friend-image">
             <div className="image">
-                <img src={`/images/${friend.image}`} alt="" />
+                <img src={`/images/${friend.fndInfo.image}`} alt="" />
             </div>
         </div>
         <div className="friend-name">
-            <h4>{friend.userName}</h4>
+            <h4>{friend.fndInfo.userName}</h4>
         </div>
     </div>
   )
