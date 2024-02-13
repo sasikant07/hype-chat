@@ -113,7 +113,7 @@ const Messenger = () => {
 
   useEffect(() => {
     if (friends && friends.length > 0) {
-      setCurrentFriend(friends[0]);
+      setCurrentFriend(friends[0].fndInfo);
     }
   }, [friends]);
 
@@ -244,7 +244,7 @@ const Messenger = () => {
                           : `hover-friend`
                       }
                     >
-                      <Friends friend={fd} />
+                      <Friends myId={myInfo.id} friend={fd} />
                     </div>
                   ))
                 : "No Friends Found!"}
