@@ -4,6 +4,7 @@ import api from "../../api/api";
 const initialState = {
   friends: [],
   message: [],
+  messageSendSuccess: false,
 };
 
 export const getFriends = createAsyncThunk(
@@ -61,9 +62,18 @@ const messengerReducer = createSlice({
     messageClear: (state, _) => {
       // state.error = "";
       // state.success = "";
+      state.messageSendSuccess = false;
     },
     sendSocketMessage: (state, action) => {
       state.message = [...state.message, action.payload.message];
+    },
+    updateFriendMessage: (state, action) => {
+      const index = state.friends.findIndex(
+        (f) =>
+          f.fndInfo._id === action.payload.msgInfo.receiverId ||
+          f.fndInfo._id === action.payload.msgInfo.senderId
+      );
+      state.friends[index].msgInfo = action.payload.msgInfo;
     },
   },
   extraReducers: (builder) => {
@@ -74,6 +84,7 @@ const messengerReducer = createSlice({
       state.friends = action.payload.friends;
     });
     builder.addCase(messageSend.fulfilled, (state, action) => {
+      state.messageSendSuccess = true;
       state.message = [...state.message, action.payload.message];
     });
     builder.addCase(imageMessageSend.fulfilled, (state, action) => {
@@ -85,6 +96,7 @@ const messengerReducer = createSlice({
   },
 });
 
-export const { messageClear, sendSocketMessage } = messengerReducer.actions;
+export const { messageClear, sendSocketMessage, updateFriendMessage } =
+  messengerReducer.actions;
 
 export default messengerReducer.reducer;

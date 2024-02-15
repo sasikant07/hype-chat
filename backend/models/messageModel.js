@@ -24,6 +24,10 @@ const messageSchema = new Schema(
         default: "",
       },
     },
+    status: {
+      type: String,
+      default: "unseen",
+    },
   },
   { timestamps: true }
 );
