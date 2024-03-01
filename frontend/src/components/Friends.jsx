@@ -1,14 +1,23 @@
 import React from "react";
 import moment from "moment";
+import { RiCheckboxCircleFill } from "react-icons/ri";
+import { HiOutlineCheckCircle } from "react-icons/hi";
 
 const Friends = (props) => {
   const { fndInfo, msgInfo } = props.friend;
-  const { myId } = props;
+  const { myId, activeUsers } = props;
   return (
     <div className="friend">
       <div className="friend-image">
         <div className="image">
           <img src={`/images/${fndInfo.image}`} alt="" />
+          {activeUsers &&
+          activeUsers.length > 0 &&
+          activeUsers.some((u) => u.userId === fndInfo._id) ? (
+            <div className="active-icon"></div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <div className="friend-name-seen">
@@ -36,11 +45,25 @@ const Friends = (props) => {
         </div>
         {myId === msgInfo?.senderId ? (
           <div className="seen-unseen-icon">
-            <img src={`/images/${fndInfo.image}`} alt="" />
+            {msgInfo?.status === "seen" ? (
+              <img src={`/images/${fndInfo.image}`} alt="" />
+            ) : msgInfo.status === "delivered" ? (
+              <div className="delivered">
+                <RiCheckboxCircleFill />
+              </div>
+            ) : (
+              <div className="unseen">
+                <HiOutlineCheckCircle />
+              </div>
+            )}
           </div>
         ) : (
           <div className="seen-unseen-icon">
-            <div className="seen-icon"></div>
+            {msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? (
+              <div className="seen-icon"></div>
+            ) : (
+              ""
+            )}
           </div>
         )}
       </div>

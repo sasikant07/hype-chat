@@ -20,13 +20,19 @@ import {
   sendSocketMessage,
   updateFriendMessage,
   messageClear,
+  seenMessage,
+  updateMessage,
+  messegeSeen,
+  messageDelivered,
+  updateFriend,
+  messageGetSuccessClear,
+  seenAll,
 } from "../store/reducers/messengerReducer";
 
 const Messenger = () => {
   const dispatch = useDispatch();
-  const { friends, message, messageSendSuccess } = useSelector(
-    (state) => state.messenger
-  );
+  const { friends, message, messageSendSuccess, messageGetSuccess } =
+    useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
   const scrollRef = useRef();
   const socket = useRef();
@@ -87,17 +93,6 @@ const Messenger = () => {
       formData.append("image", e.target.files[0]);
       formData.append("imageName", newImageName);
 
-      socket.current.emit("sendMessage", {
-        senderId: myInfo.id,
-        senderName: myInfo.userName,
-        receiverId: currentFriend._id,
-        time: new Date(),
-        message: {
-          text: "",
-          image: newImageName,
-        },
-      });
-
       dispatch(imageMessageSend(formData));
     }
   };
@@ -117,6 +112,23 @@ const Messenger = () => {
   }, [currentFriend?._id]);
 
   useEffect(() => {
+    if (message.length > 0) {
+      if (
+        message[message.length - 1].senderId !== myInfo.id &&
+        message[message.length - 1].status !== "seen"
+      ) {
+        dispatch(updateFriend({ id: currentFriend._id }));
+        socket.current.emit("seen", {
+          senderId: currentFriend._id,
+          receiverId: myInfo.id,
+        });
+        dispatch(seenMessage({ _id: message[message.length - 1]._id }));
+      }
+    }
+    dispatch(messageGetSuccessClear());
+  }, [messageGetSuccess]);
+
+  useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [message]);
 
@@ -129,6 +141,18 @@ const Messenger = () => {
 
     socket.current.on("typingMessageGet", (data) => {
       setTypingMessage(data);
+    });
+
+    socket.current.on("msgSeenResponse", (msg) => {
+      dispatch(messegeSeen({ msgInfo: msg }));
+    });
+
+    socket.current.on("msgDeliveredResponse", (msg) => {
+      dispatch(messageDelivered({ msgInfo: msg }));
+    });
+
+    socket.current.on("seenSuccess", (data) => {
+      dispatch(seenAll(data));
     });
   }, []);
 
@@ -154,6 +178,14 @@ const Messenger = () => {
         socketMessage.receiverId === myInfo.id
       ) {
         dispatch(sendSocketMessage({ message: socketMessage }));
+        dispatch(seenMessage(socketMessage));
+        socket.current.emit("messageSeen", socketMessage);
+        dispatch(
+          updateFriendMessage({
+            msgInfo: socketMessage,
+            status: "seen",
+          })
+        );
       }
     }
     setSocketMessage("");
@@ -170,6 +202,14 @@ const Messenger = () => {
         duration: 10000,
         position: "bottom-right",
       });
+      dispatch(updateMessage(socketMessage));
+      socket.current.emit("deliveredMessage", socketMessage);
+      dispatch(
+        updateFriendMessage({
+          msgInfo: socketMessage,
+          status: "delivered",
+        })
+      );
     }
   }, [socketMessage]);
 
@@ -229,7 +269,7 @@ const Messenger = () => {
                 />
               </div>
             </div>
-            <div className="active-friends">
+            {/* <div className="active-friends">
               {activeUsers && activeUsers.length > 0
                 ? activeUsers.map((u) => (
                     <ActiveFriend
@@ -238,7 +278,7 @@ const Messenger = () => {
                     />
                   ))
                 : ""}
-            </div>
+            </div> */}
             <div className="friends">
               {friends && friends.length > 0
                 ? friends.map((fd, index) => (
@@ -251,7 +291,7 @@ const Messenger = () => {
                           : `hover-friend`
                       }
                     >
-                      <Friends myId={myInfo.id} friend={fd} />
+                      <Friends myId={myInfo.id} friend={fd} activeUsers={activeUsers}/>
                     </div>
                   ))
                 : "No Friends Found!"}

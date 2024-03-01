@@ -14,5 +14,7 @@ router.post(
   messengerController.imageMessageUpload
 );
 router.get("/get-message/:id", authMiddleware, messengerController.getMessage);
+router.post("/seen-message", authMiddleware, messengerController.messageSeen);
+router.post("/delivered-message", authMiddleware, messengerController.deliveredMessage);
 
 module.exports = router;

@@ -5,6 +5,27 @@
   &::-webkit-scrollbar {
     overflow: hidden;
   }
+  .friend-connect {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    color: #fff;
+
+    img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    h3 {
+      margin-top: 10px;
+    }
+    span {
+      color: red;
+    }
+  }
   .my-message {
     float: right;
     .my-text {
@@ -68,6 +89,7 @@
     border-radius: 50%;
     overflow: hidden;
     margin-right: 10px;
+    object-fit: cover;
   }
   .message-text {
     padding: 8px;

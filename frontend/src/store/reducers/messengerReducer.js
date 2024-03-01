@@ -5,6 +5,7 @@ const initialState = {
   friends: [],
   message: [],
   messageSendSuccess: false,
+  messageGetSuccess: false,
 };
 
 export const getFriends = createAsyncThunk(
@@ -55,6 +56,30 @@ export const getMessage = createAsyncThunk(
   }
 );
 
+export const seenMessage = createAsyncThunk(
+  "messenger/seen-message",
+  async (msg, thunkAPI) => {
+    try {
+      const { data } = await api.post(`/messenger/seen-message`, msg);
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateMessage = createAsyncThunk(
+  "messenger/delivered-message",
+  async (msg, thunkAPI) => {
+    try {
+      const { data } = await api.post(`/messenger/delivered-message`, msg);
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const messengerReducer = createSlice({
   name: "messenger",
   initialState,
@@ -74,6 +99,40 @@ const messengerReducer = createSlice({
           f.fndInfo._id === action.payload.msgInfo.senderId
       );
       state.friends[index].msgInfo = action.payload.msgInfo;
+      state.friends[index].msgInfo.status = action.payload.status;
+    },
+    messegeSeen: (state, action) => {
+      const index = state.friends.findIndex(
+        (f) =>
+          f.fndInfo._id === action.payload.msgInfo.receiverId ||
+          f.fndInfo._id === action.payload.msgInfo.senderId
+      );
+      state.friends[index].msgInfo.status = "seen";
+    },
+    messageDelivered: (state, action) => {
+      const index = state.friends.findIndex(
+        (f) =>
+          f.fndInfo._id === action.payload.msgInfo.receiverId ||
+          f.fndInfo._id === action.payload.msgInfo.senderId
+      );
+      state.friends[index].msgInfo.status = "delivered";
+    },
+    updateFriend: (state, action) => {
+      const index = state.friends.findIndex(
+        (f) => f.fndInfo._id === action.payload.id
+      );
+      if (state.friends[index].msgInfo) {
+        state.friends[index].msgInfo.status = "seen";
+      }
+    },
+    messageGetSuccessClear: (state) => {
+      state.messageGetSuccess = false;
+    },
+    seenAll: (state, action) => {
+      const index = state.friends.findIndex(
+        (f) => f.fndInfo._id === action.payload.receiverId
+      );
+      state.friends[index].msgInfo.status = "seen";
     },
   },
   extraReducers: (builder) => {
@@ -91,12 +150,21 @@ const messengerReducer = createSlice({
       state.message = [...state.message, action.payload.message];
     });
     builder.addCase(getMessage.fulfilled, (state, action) => {
+      state.messageGetSuccess = true;
       state.message = action.payload.message;
     });
   },
 });
 
-export const { messageClear, sendSocketMessage, updateFriendMessage } =
-  messengerReducer.actions;
+export const {
+  messageClear,
+  sendSocketMessage,
+  updateFriendMessage,
+  messegeSeen,
+  messageDelivered,
+  updateFriend,
+  messageGetSuccessClear,
+  seenAll,
+} = messengerReducer.actions;
 
 export default messengerReducer.reducer;

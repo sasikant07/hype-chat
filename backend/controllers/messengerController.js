@@ -81,15 +81,7 @@ const messageUploadDB = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: {
-        senderId: senderId,
-        senderName: senderName,
-        receiverId: receiverId,
-        message: {
-          text: message,
-          image: "",
-        },
-      },
+      message: insertMessage,
     });
   } catch (error) {
     res.status(500).json({ error: { errorMessage: error } });
@@ -171,15 +163,7 @@ const imageMessageUpload = async (req, res) => {
           });
           res.status(201).json({
             success: true,
-            message: {
-              senderId: senderId,
-              senderName: senderName,
-              receiverId: receiverId,
-              message: {
-                text: "",
-                image: imageName,
-              },
-            },
+            message: insertMessage,
           });
         }
       });
@@ -189,9 +173,37 @@ const imageMessageUpload = async (req, res) => {
   });
 };
 
+const messageSeen = async (req, res) => {
+  const messageId = req.body._id;
+
+  try {
+    await messageModel.findByIdAndUpdate(messageId, {
+      status: "seen",
+    });
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: { errorMessage: error } });
+  }
+};
+
+const deliveredMessage = async (req, res) => {
+  const messageId = req.body._id;
+
+  try {
+    await messageModel.findByIdAndUpdate(messageId, {
+      status: "delivered",
+    });
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: { errorMessage: error } });
+  }
+};
+
 module.exports = {
   getFriends,
   messageUploadDB,
   getMessage,
   imageMessageUpload,
+  messageSeen,
+  deliveredMessage,
 };
