@@ -99,7 +99,7 @@ const messengerReducer = createSlice({
           f.fndInfo._id === action.payload.msgInfo.senderId
       );
       state.friends[index].msgInfo = action.payload.msgInfo;
-      state.friends[index].msgInfo.status = action.payload.status;
+      // state.friends[index].msgInfo.status = action.payload.status;
     },
     messegeSeen: (state, action) => {
       const index = state.friends.findIndex(

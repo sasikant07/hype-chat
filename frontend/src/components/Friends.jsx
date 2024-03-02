@@ -22,15 +22,15 @@ const Friends = (props) => {
       </div>
       <div className="friend-name-seen">
         <div className="friend-name">
-          <h4>{fndInfo.userName}</h4>
+          <h4 className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{fndInfo.userName}</h4>
           <div className="msg-time">
             {msgInfo && msgInfo.senderId === myId ? (
               <span>You: </span>
             ) : (
-              <span>{fndInfo.userName + " "}</span>
+              <span className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{fndInfo.userName + " "}</span>
             )}
             {msgInfo && msgInfo.message.text ? (
-              <span>{msgInfo.message.text.slice(0, 10)}</span>
+              <span className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{msgInfo.message.text.slice(0, 10)}</span>
             ) : msgInfo && msgInfo.message.image ? (
               <span>Sent a image</span>
             ) : (

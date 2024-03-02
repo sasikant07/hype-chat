@@ -52,11 +52,17 @@
           align-items: flex-start;
           justify-content: center;
           flex-direction: column;
+          h4.unseen-message {
+            font-weight: 700 !important;
+          }
           h4 {
             color: #fff;
             font-weight: 400;
           }
           .msg-time {
+            span.unseen-message {
+              font-weight: 700 !important;
+            }
             span {
               font-size: 12px;
               color: #fff;

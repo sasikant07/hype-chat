@@ -1,6 +1,8 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import { RiCheckboxCircleFill } from "react-icons/ri";
+import { HiOutlineCheckCircle } from "react-icons/hi";
 
 const Message = ({ message, currentFriend, scrollRef, typingMessage }) => {
   const { myInfo } = useSelector((state) => state.auth);
@@ -24,6 +26,26 @@ const Message = ({ message, currentFriend, scrollRef, typingMessage }) => {
                         m.message.text
                       )}
                     </p>
+                    {index === message.length - 1 &&
+                    m?.senderId === myInfo.id ? (
+                      m.status === "seen" ? (
+                        <img
+                          className="img"
+                          src={`./images/${currentFriend.image}`}
+                          alt=""
+                        />
+                      ) : m.status === "delivered" ? (
+                        <span>
+                          <RiCheckboxCircleFill />
+                        </span>
+                      ) : (
+                        <span>
+                          <HiOutlineCheckCircle />
+                        </span>
+                      )
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
                 <div className="time">{moment(m.createdAt).format("llll")}</div>
