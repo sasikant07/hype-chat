@@ -9,13 +9,14 @@
         padding: 8px;
         font-size: 20px;
         cursor: pointer;
-        color: #fff;
+        color: var(--icon-color);
 
         label {
             display: flex;
             align-items: center;
             margin-bottom: 0;
             cursor: pointer;
+            color: var(--icon-color);
         }
 
         #pic {
@@ -24,10 +25,11 @@
         .add-image, .add-attachment, .add-gift {
             position: fixed;
             padding: 4px;
-            background-color: #212d44;
+            background-color: var(--icon-bg-color);
             font-size: 14px;
             bottom: 44px;
             display: none;
+            color: var(--icon-color);
         }
     }
     .hover-attachment {
@@ -58,7 +60,7 @@
         display: flex;
         width: 70%;
         height: 40px;
-        background-color: #15162559;
+        background-color: var(--search-bg);
         border-radius: 50px;
         border: none;
         align-items: center;
@@ -68,7 +70,11 @@
             border-bottom-left-radius: 50px;
             border-top-left-radius: 50px;
             background-color: transparent;
+            color: var(--text-color);
             border: none;
+            &::placeholder {
+                color: var(--text-color);
+            }
         }
         label {
             font-size: 20px;

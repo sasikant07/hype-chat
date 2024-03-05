@@ -16,7 +16,7 @@ const Message = ({ message, currentFriend, scrollRef, typingMessage }) => {
               <div ref={scrollRef} className="my-message" key={index}>
                 <div className="image-message">
                   <div className="my-text">
-                    <p className="message-text">
+                    <p className="message-text my">
                       {m.message.text === "" ? (
                         <img
                           src={`./images/${m.message.image}`}
@@ -56,7 +56,7 @@ const Message = ({ message, currentFriend, scrollRef, typingMessage }) => {
                   <img src={`./images/${currentFriend.image}`} alt="" />
                   <div className="message-time">
                     <div className="fd-text">
-                      <p className="message-text">
+                      <p className="message-text fd">
                         {m.message.text === "" ? (
                           <img
                             src={`./images/${m.message.image}`}

@@ -46,6 +46,21 @@ export const userLogin = createAsyncThunk(
   }
 );
 
+export const userLogout = createAsyncThunk(
+  "auth/user-logout",
+  async (_, thunkAPI) => {
+    try {
+      const { data } = await api.post("/messenger/user-logout");
+      if (data.success) {
+        localStorage.removeItem("authToken");
+      }
+      return thunkAPI.fulfillWithValue(data);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const authReducer = createSlice({
   name: "auth",
   initialState,
@@ -87,6 +102,11 @@ const authReducer = createSlice({
       state.error = action.payload.error.errorMessage;
       state.authenticate = false;
       state.myInfo = "";
+    });
+    builder.addCase(userLogout.fulfilled, (state, action) => {
+      state.authenticate = false;
+      state.myInfo = "";
+      state.success = "Logout Successfully";
     });
   },
 });

@@ -7,7 +7,7 @@
         transition: all 0.5s;
         .message-send-show {
           height: 100vh;
-          border-right: 1px solid #213156bf;
+          border-right: 1px solid var(--border-color);
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -17,7 +17,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 12px 10px;
-            border-bottom: 1px solid #213156bf;
+            border-bottom: 1px solid var(--border-color);
             .image-name {
               display: flex;
               .image {
@@ -33,7 +33,7 @@
                   width: 10px;
                   height: 10px;
                   border-radius: 50%;
-                  background-color: #1bdf35;
+                  background-color: var(--active-icon-color);
                   right: 0px;
                   bottom: 0px;
                 }
@@ -46,7 +46,7 @@
 
                 h3 {
                   padding-left: 10px;
-                  color: #fff;
+                  color: var(--text-color);
                 }
               }
             }
@@ -59,9 +59,9 @@
                 border-radius: 50%;
                 margin-left: 8px;
                 border: 24px;
-                color: #fff;
+                color: var(--icon-color);
                 cursor: pointer;
-                background-color: #0a0a1357;
+                background-color: var(--icon-bg-color);
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -69,6 +69,7 @@
                   display: flex;
                   margin-bottom: 0;
                   cursor: pointer;
+                  color: var(--icon-color);
                 }
               }
             }

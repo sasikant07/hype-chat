@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { BsThreeDots } from "react-icons/bs";
+import { RiLogoutCircleLine } from "react-icons/ri";
 import { FaEdit } from "react-icons/fa";
 import { BiSearch } from "react-icons/bi";
 import ActiveFriend from "./ActiveFriend";
@@ -28,6 +29,7 @@ import {
   messageGetSuccessClear,
   seenAll,
 } from "../store/reducers/messengerReducer";
+import { userLogout } from "../store/reducers/authReducer";
 
 const Messenger = () => {
   const dispatch = useDispatch();
@@ -41,6 +43,7 @@ const Messenger = () => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [socketMessage, setSocketMessage] = useState("");
   const [typingMessage, setTypingMessage] = useState("");
+  const [hide, setHide] = useState(false);
   const [notificationSoundPlay] = useSound(notificationSound);
   const [sendingSoundPlay] = useSound(sendingSound);
 
@@ -225,6 +228,11 @@ const Messenger = () => {
     }
   }, [messageSendSuccess]);
 
+  const logout = () => {
+    dispatch(userLogout());
+    socket.current.emit("logout", myInfo.id);
+  };
+
   return (
     <div className="messenger">
       {/* <Toaster 
@@ -249,11 +257,25 @@ const Messenger = () => {
                 </div>
               </div>
               <div className="icons">
-                <div className="icon">
+                <div onClick={() => setHide(!hide)} className="icon">
                   <BsThreeDots />
                 </div>
                 <div className="icon">
                   <FaEdit />
+                </div>
+                <div className={hide ? "theme-logout show" : "theme-logout"}>
+                  <h3>Dark Mode</h3>
+                  <div className="on">
+                    <label htmlFor="dark">ON</label>
+                    <input value="dark" type="radio" name="theme" id="dark" />
+                  </div>
+                  <div className="off">
+                    <label htmlFor="white">OFF</label>
+                    <input value="white" type="radio" name="theme" id="white" />
+                  </div>
+                  <div onClick={logout} className="logout">
+                    <RiLogoutCircleLine /> &nbsp;Logout
+                  </div>
                 </div>
               </div>
             </div>
@@ -291,7 +313,11 @@ const Messenger = () => {
                           : `hover-friend`
                       }
                     >
-                      <Friends myId={myInfo.id} friend={fd} activeUsers={activeUsers}/>
+                      <Friends
+                        myId={myInfo.id}
+                        friend={fd}
+                        activeUsers={activeUsers}
+                      />
                     </div>
                   ))
                 : "No Friends Found!"}

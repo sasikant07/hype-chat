@@ -22,13 +22,13 @@
       }
     }
     .active-user {
-      color: #1bdf35;
+      color: var(--active-icon-color);
       margin-bottom: 3px;
     }
     .name {
       h4 {
         font-weight: 600;
-        color: #fff;
+        color: var(--text-color);
         margin-bottom: 8px;
       }
     }
@@ -44,7 +44,7 @@
       flex-direction: row;
       justify-content: space-between;
       margin: 4px 0;
-      color: #fff;
+      color: var(--text-color);
       cursor: pointer;
       label {
         cursor: pointer;
