@@ -18,6 +18,7 @@ const RightSide = (props) => {
     imageSend,
     activeUsers,
     typingMessage,
+    theme,
   } = props;
 
   return (
@@ -69,6 +70,7 @@ const RightSide = (props) => {
                 sendMessage={sendMessage}
                 emojiSend={emojiSend}
                 imageSend={imageSend}
+                theme={theme}
               />
             </div>
           </div>
@@ -76,6 +78,7 @@ const RightSide = (props) => {
             <FriendInfo
               currentFriend={currentFriend}
               activeUsers={activeUsers}
+              message={message}
             />
           </div>
         </div>

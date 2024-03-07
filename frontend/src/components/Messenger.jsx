@@ -28,12 +28,14 @@ import {
   updateFriend,
   messageGetSuccessClear,
   seenAll,
+  getTheme,
+  themeSet,
 } from "../store/reducers/messengerReducer";
 import { userLogout } from "../store/reducers/authReducer";
 
 const Messenger = () => {
   const dispatch = useDispatch();
-  const { friends, message, messageSendSuccess, messageGetSuccess } =
+  const { friends, message, messageSendSuccess, messageGetSuccess, theme } =
     useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
   const scrollRef = useRef();
@@ -54,6 +56,21 @@ const Messenger = () => {
       receiverId: currentFriend._id,
       msg: e.target.value,
     });
+  };
+
+  const search = (e) => {
+    const getFriendClass = document.getElementsByClassName("hover-friend");
+    const friendnameClass = document.getElementsByClassName("friend-name");
+
+    for (let i = 0; i < getFriendClass.length, i < friendnameClass.length; i++) {
+      let text = friendnameClass[i].innerText.toLowerCase();
+
+      if (text.indexOf(e.target.value.toLowerCase()) > -1) {
+        getFriendClass[i].style.display = "";
+      } else {
+        getFriendClass[i].style.display = "none";
+      }
+    }
   };
 
   const sendMessage = (e) => {
@@ -171,10 +188,6 @@ const Messenger = () => {
   }, []);
 
   useEffect(() => {
-    //
-  }, []);
-
-  useEffect(() => {
     if (socketMessage && currentFriend) {
       if (
         socketMessage.senderId === currentFriend._id &&
@@ -233,8 +246,18 @@ const Messenger = () => {
     socket.current.emit("logout", myInfo.id);
   };
 
+  useEffect(() => {
+    const theme = localStorage.getItem("theme");
+    let mode = theme ? theme : "white";
+    dispatch(
+      getTheme({
+        theme: mode,
+      })
+    );
+  }, []);
+
   return (
-    <div className="messenger">
+    <div className={theme === "dark" ? "messenger theme" : "messenger"}>
       {/* <Toaster 
         position={"bottom-right"}
         reverseOrder={false}
@@ -267,11 +290,29 @@ const Messenger = () => {
                   <h3>Dark Mode</h3>
                   <div className="on">
                     <label htmlFor="dark">ON</label>
-                    <input value="dark" type="radio" name="theme" id="dark" />
+                    <input
+                      onChange={(e) =>
+                        dispatch(themeSet({ theme: e.target.value }))
+                      }
+                      value="dark"
+                      type="radio"
+                      name="theme"
+                      id="dark"
+                      checked={theme === "dark"}
+                    />
                   </div>
                   <div className="off">
                     <label htmlFor="white">OFF</label>
-                    <input value="white" type="radio" name="theme" id="white" />
+                    <input
+                      onChange={(e) =>
+                        dispatch(themeSet({ theme: e.target.value }))
+                      }
+                      value="white"
+                      type="radio"
+                      name="theme"
+                      id="white"
+                      checked={theme === "white"}
+                    />
                   </div>
                   <div onClick={logout} className="logout">
                     <RiLogoutCircleLine /> &nbsp;Logout
@@ -285,6 +326,7 @@ const Messenger = () => {
                   <BiSearch />
                 </button>
                 <input
+                  onChange={search}
                   type="text"
                   className="form-control"
                   placeholder="search"
@@ -336,6 +378,7 @@ const Messenger = () => {
             imageSend={imageSend}
             activeUsers={activeUsers}
             typingMessage={typingMessage}
+            theme={theme}
           />
         ) : (
           "Please select a friend to chat"

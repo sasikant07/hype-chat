@@ -22,7 +22,7 @@ const Friends = (props) => {
       </div>
       <div className="friend-name-seen">
         <div className="friend-name">
-          <h4 className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{fndInfo.userName}</h4>
+          <h4 className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen fd-name" ? "unseen-message fd-name" : "fd-name"}>{fndInfo.userName}</h4>
           <div className="msg-time">
             {msgInfo && msgInfo.senderId === myId ? (
               <span>You: </span>

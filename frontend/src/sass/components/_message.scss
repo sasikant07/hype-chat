@@ -43,8 +43,8 @@
       }
 
       .my {
-        background-color: var(--my-message-bg);
-        color: var(--my-message-color);
+        background-color: var(--fd-message-bg);
+        color: var(--fd-message-color);
       }
       .message-text {
         text-align: end;
@@ -76,8 +76,8 @@
       justify-content: flex-start;
       width: 370px;
       .fd {
-        background-color: var(--my-message-bg);
-        color: var(--my-message-color);
+        background-color: var(--fd-message-bg);
+        color: var(--fd-message-color);
       }
       .message-text {
         text-align: start;

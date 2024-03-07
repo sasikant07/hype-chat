@@ -1,7 +1,7 @@
 import React from "react";
 import { BsChevronDown } from "react-icons/bs";
 
-const FriendInfo = ({ currentFriend, activeUsers }) => {
+const FriendInfo = ({ currentFriend, activeUsers, message }) => {
   return (
     <div className="friend-info">
       <input type="checkbox" id="gallery" />
@@ -37,10 +37,12 @@ const FriendInfo = ({ currentFriend, activeUsers }) => {
         </div>
       </div>
       <div className="gallery">
-        <img src="/images/e5e1b7a95f49f612418a0a803admin.jpg" alt="" />
-        <img src="/images/e5e1b7a95f49f612418a0a803admin.jpg" alt="" />
-        <img src="/images/e5e1b7a95f49f612418a0a803admin.jpg" alt="" />
-        <img src="/images/e5e1b7a95f49f612418a0a803admin.jpg" alt="" />
+        {message && message.length > 0
+          ? message.map(
+              (m, i) =>
+                m.message.image && <img key={i} src={`/images/${m.message.image}`} alt="" />
+            )
+          : ""}
       </div>
     </div>
   );

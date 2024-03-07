@@ -6,6 +6,7 @@ const initialState = {
   message: [],
   messageSendSuccess: false,
   messageGetSuccess: false,
+  theme: "",
 };
 
 export const getFriends = createAsyncThunk(
@@ -134,6 +135,13 @@ const messengerReducer = createSlice({
       );
       state.friends[index].msgInfo.status = "seen";
     },
+    getTheme: (state, action) => {
+      state.theme = action.payload.theme;
+    },
+    themeSet: (state, action) => {
+      localStorage.setItem("theme", action.payload.theme);
+      state.theme = action.payload.theme;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getFriends.pending, (state) => {
@@ -165,6 +173,8 @@ export const {
   updateFriend,
   messageGetSuccessClear,
   seenAll,
+  getTheme,
+  themeSet,
 } = messengerReducer.actions;
 
 export default messengerReducer.reducer;

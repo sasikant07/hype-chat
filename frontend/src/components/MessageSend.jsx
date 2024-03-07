@@ -1,4 +1,5 @@
 import React from "react";
+import EmojiPicker from 'emoji-picker-react';
 import { BiMessageAltEdit } from "react-icons/bi";
 import { BsPlusCircle } from "react-icons/bs";
 import { RiGalleryLine } from "react-icons/ri";
@@ -6,52 +7,7 @@ import { AiFillGift } from "react-icons/ai";
 import { IoMdSend } from "react-icons/io";
 import { MdEmojiEmotions } from "react-icons/md";
 
-const MessageSend = ({ newMessage, inputHandle, sendMessage, emojiSend, imageSend }) => {
-  const emojis = [
-    "😀",
-    "😃",
-    "😄",
-    "😁",
-    "😆",
-    "😅",
-    "🤣",
-    "😂",
-    "🤣",
-    "🙂",
-    "🙃",
-    "🫠",
-    "😉",
-    "😊",
-    "😇",
-    "🥰",
-    "😍",
-    "🤩",
-    "😘",
-    "😗",
-    "🥲",
-    "😋",
-    "😛",
-    "😜",
-    "🤪",
-    "😝",
-    "🤑",
-    "🤗",
-    "🤭",
-    "🫣",
-    "🤫",
-    "🤔",
-    "🫡",
-    "🤐",
-    "🤨",
-    "😐",
-    "😬",
-    "😌",
-    "😔",
-    "😴",
-    "😷",
-    "🤒",
-    "🤢",
-  ];
+const MessageSend = ({ newMessage, inputHandle, sendMessage, emojiSend, imageSend, theme }) => {
 
   return (
     <div className="message-send-section">
@@ -91,9 +47,7 @@ const MessageSend = ({ newMessage, inputHandle, sendMessage, emojiSend, imageSen
       </div>
       <div className="emoji-section">
         <div className="emoji">
-          {emojis.map((e) => (
-            <span onClick={() => emojiSend(e)}>{e}</span>
-          ))}
+          <EmojiPicker theme={theme === "white" ? "light" : "dark"} onEmojiClick={(e) => emojiSend(e.emoji)}/>
         </div>
       </div>
     </div>
