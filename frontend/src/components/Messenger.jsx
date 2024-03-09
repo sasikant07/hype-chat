@@ -30,13 +30,22 @@ import {
   seenAll,
   getTheme,
   themeSet,
+  logoutClearMessage,
+  newUserAdd,
+  newUserAddClear,
 } from "../store/reducers/messengerReducer";
 import { userLogout } from "../store/reducers/authReducer";
 
 const Messenger = () => {
   const dispatch = useDispatch();
-  const { friends, message, messageSendSuccess, messageGetSuccess, theme } =
-    useSelector((state) => state.messenger);
+  const {
+    friends,
+    message,
+    messageSendSuccess,
+    messageGetSuccess,
+    theme,
+    newUserAdded,
+  } = useSelector((state) => state.messenger);
   const { myInfo } = useSelector((state) => state.auth);
   const scrollRef = useRef();
   const socket = useRef();
@@ -62,7 +71,11 @@ const Messenger = () => {
     const getFriendClass = document.getElementsByClassName("hover-friend");
     const friendnameClass = document.getElementsByClassName("friend-name");
 
-    for (let i = 0; i < getFriendClass.length, i < friendnameClass.length; i++) {
+    for (
+      let i = 0;
+      i < getFriendClass.length, i < friendnameClass.length;
+      i++
+    ) {
       let text = friendnameClass[i].innerText.toLowerCase();
 
       if (text.indexOf(e.target.value.toLowerCase()) > -1) {
@@ -119,7 +132,8 @@ const Messenger = () => {
 
   useEffect(() => {
     dispatch(getFriends());
-  }, []);
+    dispatch(newUserAddClear());
+  }, [newUserAdded]);
 
   useEffect(() => {
     if (friends && friends.length > 0) {
@@ -185,6 +199,13 @@ const Messenger = () => {
       const filterUser = users.filter((u) => u.userId !== myInfo.id);
       setActiveUsers(filterUser);
     });
+    socket.current.on("newUserAdd", (data) => {
+      dispatch(
+        newUserAdd({
+          newUser: data,
+        })
+      );
+    });
   }, []);
 
   useEffect(() => {
@@ -243,6 +264,7 @@ const Messenger = () => {
 
   const logout = () => {
     dispatch(userLogout());
+    dispatch(logoutClearMessage());
     socket.current.emit("logout", myInfo.id);
   };
 

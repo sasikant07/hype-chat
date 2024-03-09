@@ -6,6 +6,7 @@ const initialState = {
   message: [],
   messageSendSuccess: false,
   messageGetSuccess: false,
+  newUserAdded: "",
   theme: "",
 };
 
@@ -142,6 +143,18 @@ const messengerReducer = createSlice({
       localStorage.setItem("theme", action.payload.theme);
       state.theme = action.payload.theme;
     },
+    logoutClearMessage: (state) => {
+      state.friends = [];
+      state.message = [];
+      state.messageSendSuccess = false;
+      state.messageGetSuccess = false;
+    },
+    newUserAdd: (state, action) => {
+      state.newUserAdded = action.payload.newUser;
+    },
+    newUserAddClear: (state) => {
+      state.newUserAdded = "";
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getFriends.pending, (state) => {
@@ -175,6 +188,9 @@ export const {
   seenAll,
   getTheme,
   themeSet,
+  logoutClearMessage,
+  newUserAdd,
+  newUserAddClear,
 } = messengerReducer.actions;
 
 export default messengerReducer.reducer;

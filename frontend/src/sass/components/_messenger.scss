@@ -83,7 +83,11 @@
               }
             }
             .icon {
-              padding: 8px;
+              width: 33px;
+              height: 33px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
               background-color: var(--icon-bg-color);
               margin-left: 8px;
               border-radius: 24px;
