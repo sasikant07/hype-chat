@@ -27,14 +27,14 @@ const Friends = (props) => {
             {msgInfo && msgInfo.senderId === myId ? (
               <span>You: </span>
             ) : (
-              <span className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{fndInfo.userName + " "}</span>
+              <span className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{fndInfo.userName + ": "}</span>
             )}
             {msgInfo && msgInfo.message.text ? (
-              <span className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{msgInfo.message.text.slice(0, 10)}</span>
+              <span className={msgInfo?.senderId !== myId && msgInfo?.status !== undefined && msgInfo?.status !== "seen" ? "unseen-message" : ""}>{msgInfo.message.text.slice(0, 10) + " "}</span>
             ) : msgInfo && msgInfo.message.image ? (
               <span>Sent a image</span>
             ) : (
-              <span>connected</span>
+              <span className="connected-text"> connected </span>
             )}
             <span>
               {msgInfo
